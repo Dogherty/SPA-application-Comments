@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="stylesheet" href="{% static 'comments/css/styles.css' %}">
+
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <div class="container">
+        <div id="app" data-post-id="{{ post_id }}" data-year="{{ year }}" data-month="{{ month }}" data-day="{{ day }}">
+            <div class="post">
+                <h1 v-if="post" v-html="post.title"></h1>
+                <p v-if="post" v-html="post.body"></p>
+            </div>
+            <div class="comments">
+                <h2 class="h7y6">Комментарии</h2>
+                <ul>
+                    <div class="comment-sort">
+                        <p>Сортировать по:
+                        <button @click="sortComments('user_name')">Имени</button>
+                        <button @click="sortComments('email')">E-mail</button>
+                        <button @click="sortComments('date_added')">Дате</button></p>
+                    </div>
+                    <button class="add-comment-button" @click="showCommentForm">Добавить комментарий</button>
+                    <div v-if="showForm">
+                        <section class="comment-form slide-in" id="ugcNewComment">
+                            <h3 class="section-title">Оставьте ваш комментарий</h3>
+                            <form @submit.prevent="submitComment(year, month, day, postID)">
+                                {{ comment_form.non_field_errors }}
+                                <div class="form-group">
+                                    <div class="form-field">
+                                        <label for="user_name">Имя:</label>
+                                        <input v-model="commentForm.user_name" type="text" id="user_name" class="form-control" placeholder="Ваше имя">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="home_page">Сайт:</label>
+                                        <input v-model="commentForm.home_page" type="text" id="home_page" class="form-control" placeholder="Ваш сайт">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="email">E-mail:</label>
+                                        <input v-model="commentForm.email" type="text" id="email" class="form-control" placeholder="youremail@example.com">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="text">Текст:</label>
+                                        <div class="tag-buttons">
+                                            <button type="button" @click="insertTag('[i]')">[i]</button>
+                                            <button type="button" @click="insertTag('[strong]')">[strong]</button>
+                                            <button type="button" @click="insertTag('[code]')">[code]</button>
+                                            <button type="button" @click="insertTag('[a]')">[a]</button>
+                                        </div>
+                                        <textarea v-model="commentForm.text" id="text" class="form-control" rows="6" cols="20" placeholder="Ваш комментарий"></textarea>
+                                    </div>
+                                    <div class="form-file">
+                                        <label for="image">Загрузить фото:</label>
+                                        <input type="file" id="image" class="custom-file-input" @change="handleImageUpload">
+                                    </div>
+                                    <div class="form-file">
+                                        <label for="image">Загрузить TXT-файл:</label>
+                                        <input type="file" id="image" class="custom-file-input" @change="handleFileUpload">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="captcha">Captcha:</label>
+                                    </div>
+                                    <div class="form-captcha-image">
+                                        <img v-if="commentForm.captcha" :src="commentForm.captcha.image_url" alt="Captcha">
+                                        <button class="captcha-button" type="button" @click="getCaptcha()">Обновить</button>
+                                    </div>
+                                    <div class="form-field">
+                                        <input v-model="commentForm.captcha.value" type="text" id="captcha" class="form-control" placeholder="Введите код с изображения">
+                                    </div>
+                                </div>
+                                <div v-if="errorMessage" class="error-message"><span v-text="errorMessage"></span></div>
+                                <button type="submit">Отправить</button>
+                            </form>
+                        </section>
+                    </div>
+                    <li v-for="comment in comments">
+                        <comment :comment="comment" :comment_form="comment_form" :show-comment-form="showCommentForm" />
+                    </li>
+                </ul>
+                <div class="pagination">
+                    <button @click="loadPage(parseInt(page) - 1)" :disabled="parseInt(page) === parseInt(1)">Предыдущая страница</button>
+                    <span v-text="'Страница ' + page + ' из ' + total_pages"></span>
+                    <button @click="loadPage(parseInt(page) + 1)" :disabled="parseInt(page) === parseInt(total_pages)">Следующая страница</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.6/dist/purify.min.js"></script>
+    <script src="{% static 'comments/js/comments.js' %}"></script>
+</body>
+</html>

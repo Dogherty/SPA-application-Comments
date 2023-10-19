@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="stylesheet" href="{% static 'comments/css/index.css' %}">
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ block.title }}</h1>
+        <div>
+            {% if posts %}
+                {% for post in posts %}
+                    <h2>
+                        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                    </h2>
+                    <p class="date">
+                        Published {{ post.publish }} by {{ post.author }}
+                    </p>
+                    {{ post.body|truncatewords:30|linebreaks }}
+                {% endfor %}
+            {% else %}
+                <p class="empty-message">Сначала нужно добавить пост через админ панель.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

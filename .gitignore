@@ -1,0 +1,12 @@
+/venv/
+/.idea/
+/.vscode/
+main.py
+/spa/comments/__pycache__
+/spa/spa/__pycache__
+/spa/spa/settings/__pycache__
+/spa/spa/urls/__pycache__
+/spa/spa/wsgi/__pycache__
+/spa/spa/__pycache__
+/spa/Dockerfile
+/spa/docker-compose.yml
