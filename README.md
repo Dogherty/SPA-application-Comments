@@ -17,7 +17,7 @@
 1. Клонируйте репозиторий проекта на ваш локальный компьютер:
 
    ```bash
-   git clone <URL репозитория>
+   git clone https://github.com/Dogherty/SPA-application-Comments.git
 
 2. Создайте и активируйте виртуальное окружение для проекта:
 
